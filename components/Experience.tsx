@@ -89,7 +89,10 @@ export default function Experience() {
               {/* Header */}
               <div className="mb-8">
                 <div className="flex flex-wrap items-baseline gap-3 mb-2">
-                  <h3 className="font-display font-extrabold text-2xl text-[#E8E8F2]" style={{ letterSpacing: "-0.01em" }}>
+                  <h3
+                    className="font-display font-extrabold text-2xl text-[#E8E8F2]"
+                    style={{ letterSpacing: "-0.01em" }}
+                  >
                     {exp[active].title}
                   </h3>
                   <span className="text-xs font-mono text-muted border border-white/10 px-2 py-0.5 rounded-sm">
@@ -118,7 +121,9 @@ export default function Experience() {
 
               {/* Tech pills */}
               <div className="pt-6 border-t border-white/5">
-                <div className="text-xs font-mono uppercase tracking-widest text-muted mb-3">Stack</div>
+                <div className="text-xs font-mono uppercase tracking-widest text-muted mb-3">
+                  Stack
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {exp[active].tech.map((t) => (
                     <span
@@ -149,18 +154,34 @@ export default function Experience() {
               key={ed.school}
               className="p-6 bg-surface border border-white/5 rounded-sm hover:border-accent2/25 transition-colors duration-300"
             >
-              <div className="text-xs font-mono text-accent2 mb-3 uppercase tracking-widest">
-                {ed.period}
+              {/* Period + completed badge */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-xs font-mono text-accent2 uppercase tracking-widest">
+                  {ed.period}
+                </div>
+                {ed.completed && (
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-accent border border-accent/30 bg-accent/5 px-2 py-0.5 rounded-sm">
+                    ✓ Completed
+                  </span>
+                )}
               </div>
-              <h4 className="font-display font-bold text-base text-[#E8E8F2] mb-1" style={{ letterSpacing: "-0.01em" }}>
+
+              <h4
+                className="font-display font-bold text-base text-[#E8E8F2] mb-1"
+                style={{ letterSpacing: "-0.01em" }}
+              >
                 {ed.degree}
               </h4>
               {ed.focus && (
-                <p className="text-xs font-mono text-muted mb-2">Focus: {ed.focus}</p>
+                <p className="text-xs font-mono text-muted mb-2">
+                  Focus: {ed.focus}
+                </p>
               )}
               <p className="text-sm font-mono text-subtle mb-2">{ed.school}</p>
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-accent font-medium">GPA: {ed.gpa}</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-xs font-mono text-accent font-medium">
+                  GPA: {ed.gpa}
+                </span>
                 {ed.note && (
                   <span className="text-xs font-mono text-muted">· {ed.note}</span>
                 )}

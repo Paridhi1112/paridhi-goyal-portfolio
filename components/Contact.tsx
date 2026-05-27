@@ -73,7 +73,11 @@ export default function Contact() {
               className="section-reveal font-mono text-sm text-muted leading-relaxed mb-10"
               style={{ transitionDelay: "80ms", maxWidth: "420px" }}
             >
-              I&apos;m actively looking for full-time Software Engineering and Data Engineering roles in the US. If you&apos;re working on hard problems in distributed systems, AI/ML applications, or cloud-native infrastructure — let&apos;s talk.
+              I&apos;m actively looking for full-time Software Engineering and
+              Data Engineering roles across the US — onsite, hybrid, or remote.
+              Based in Dallas, TX and open to relocation. If you&apos;re working
+              on hard problems in distributed systems, AI/ML applications, or
+              cloud-native infrastructure — let&apos;s talk.
             </p>
 
             <a
@@ -111,10 +115,20 @@ export default function Contact() {
               </a>
             ))}
 
-            {/* Location */}
-            <div className="section-reveal flex items-center gap-3 px-6 py-4" style={{ transitionDelay: "240ms" }}>
-              <span className="text-accent text-sm">📍</span>
-              <span className="text-xs font-mono text-muted">{portfolio.location} · Available for remote &amp; hybrid roles</span>
+            {/* Location + availability */}
+            <div
+              className="section-reveal flex items-start gap-3 px-6 py-4 bg-surface border border-white/5 rounded-sm"
+              style={{ transitionDelay: "240ms" }}
+            >
+              <span className="text-accent text-sm mt-0.5">📍</span>
+              <div>
+                <p className="text-xs font-mono text-subtle">
+                  Dallas, TX
+                </p>
+                <p className="text-xs font-mono text-muted mt-0.5">
+                  Available for onsite, hybrid, and remote roles
+                </p>
+              </div>
             </div>
           </div>
         </div>
