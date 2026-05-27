@@ -23,6 +23,7 @@ export default function Experience() {
   }, []);
 
   const exp = portfolio.experience;
+  const edu = portfolio.education;
 
   return (
     <section
@@ -60,22 +61,28 @@ export default function Experience() {
 
       <div className="grid lg:grid-cols-[280px_1fr] gap-12">
         {/* Company tabs */}
-        <div className="section-reveal flex lg:flex-col gap-2">
+        <div className="section-reveal flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
           {exp.map((e, i) => (
             <button
               key={i}
               onClick={() => setActive(i)}
-              className={`group text-left px-4 py-4 rounded-sm border transition-all duration-200 ${
+              className={`group text-left px-4 py-4 rounded-sm border transition-all duration-200 shrink-0 ${
                 active === i
                   ? "border-accent/40 bg-accent/5 text-accent"
                   : "border-white/5 text-muted hover:border-white/15 hover:text-subtle"
               }`}
             >
-              <div className="font-display font-bold text-sm mb-0.5">{e.company}</div>
+              <div className="font-display font-bold text-sm mb-0.5">
+                {e.company}
+              </div>
               {e.client && (
                 <div className="text-xs font-mono text-muted">→ {e.client}</div>
               )}
-              <div className={`text-[10px] font-mono mt-1 ${active === i ? "text-accent/60" : "text-muted/60"}`}>
+              <div
+                className={`text-[10px] font-mono mt-1 ${
+                  active === i ? "text-accent/60" : "text-muted/60"
+                }`}
+              >
                 {e.period}
               </div>
             </button>
@@ -101,7 +108,9 @@ export default function Experience() {
                 </div>
                 <div className="flex flex-wrap gap-4 text-xs font-mono text-muted">
                   <span className="text-accent">{exp[active].company}</span>
-                  {exp[active].client && <span>Client: {exp[active].client}</span>}
+                  {exp[active].client && (
+                    <span>Client: {exp[active].client}</span>
+                  )}
                   <span>{exp[active].location}</span>
                   <span>{exp[active].period}</span>
                 </div>
@@ -140,7 +149,7 @@ export default function Experience() {
         </div>
       </div>
 
-      {/* Education timeline */}
+      {/* Education */}
       <div className="section-reveal mt-20 pt-16 border-t border-white/5">
         <div className="mb-6 flex items-center gap-3">
           <span className="w-6 h-px bg-accent2 block" />
@@ -148,14 +157,15 @@ export default function Experience() {
             Education
           </span>
         </div>
+
         <div className="grid md:grid-cols-2 gap-6">
-          {portfolio.education.map((ed) => (
+          {edu.map((ed) => (
             <div
               key={ed.school}
               className="p-6 bg-surface border border-white/5 rounded-sm hover:border-accent2/25 transition-colors duration-300"
             >
-              {/* Period + completed badge */}
-              <div className="flex items-center gap-3 mb-3">
+              {/* Period + Completed badge */}
+              <div className="flex flex-wrap items-center gap-3 mb-3">
                 <div className="text-xs font-mono text-accent2 uppercase tracking-widest">
                   {ed.period}
                 </div>
@@ -172,18 +182,23 @@ export default function Experience() {
               >
                 {ed.degree}
               </h4>
+
               {ed.focus && (
                 <p className="text-xs font-mono text-muted mb-2">
                   Focus: {ed.focus}
                 </p>
               )}
-              <p className="text-sm font-mono text-subtle mb-2">{ed.school}</p>
+
+              <p className="text-sm font-mono text-subtle mb-3">{ed.school}</p>
+
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-xs font-mono text-accent font-medium">
                   GPA: {ed.gpa}
                 </span>
                 {ed.note && (
-                  <span className="text-xs font-mono text-muted">· {ed.note}</span>
+                  <span className="text-xs font-mono text-muted">
+                    · {ed.note}
+                  </span>
                 )}
               </div>
             </div>

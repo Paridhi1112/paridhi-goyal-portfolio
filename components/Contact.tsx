@@ -22,10 +22,26 @@ export default function Contact() {
   }, []);
 
   const links = [
-    { label: "Email", value: portfolio.email, href: `mailto:${portfolio.email}` },
-    { label: "LinkedIn", value: "paridhigoyal11", href: portfolio.linkedin },
-    { label: "GitHub", value: "Paridhi1112", href: portfolio.github },
-    { label: "LeetCode", value: "paridhi11", href: portfolio.leetcode },
+    {
+      label: "Email",
+      value: portfolio.email,
+      href: `mailto:${portfolio.email}`,
+    },
+    {
+      label: "LinkedIn",
+      value: "paridhigoyal11",
+      href: portfolio.linkedin,
+    },
+    {
+      label: "GitHub",
+      value: "Paridhi1112",
+      href: portfolio.github,
+    },
+    {
+      label: "LeetCode",
+      value: "paridhi11",
+      href: portfolio.leetcode,
+    },
   ];
 
   return (
@@ -70,11 +86,22 @@ export default function Contact() {
             </h2>
 
             <p
-              className="section-reveal font-mono text-sm text-muted leading-relaxed mb-10"
-              style={{ transitionDelay: "80ms", maxWidth: "420px" }}
+              className="section-reveal font-mono text-sm text-muted leading-relaxed mb-4"
+              style={{ transitionDelay: "80ms", maxWidth: "440px" }}
             >
-              I&apos;m actively looking for full-time Software Engineering and
-              Data Engineering roles across the US — onsite, hybrid, or remote.
+              I&apos;m actively seeking full-time{" "}
+              <span className="text-subtle">
+                Software Engineering and Data Engineering
+              </span>{" "}
+              roles across the US — open to{" "}
+              <span className="text-accent">onsite, hybrid, and remote</span>{" "}
+              opportunities.
+            </p>
+
+            <p
+              className="section-reveal font-mono text-sm text-muted leading-relaxed mb-10"
+              style={{ transitionDelay: "120ms", maxWidth: "440px" }}
+            >
               Based in Dallas, TX and open to relocation. If you&apos;re working
               on hard problems in distributed systems, AI/ML applications, or
               cloud-native infrastructure — let&apos;s talk.
@@ -117,17 +144,31 @@ export default function Contact() {
 
             {/* Location + availability */}
             <div
-              className="section-reveal flex items-start gap-3 px-6 py-4 bg-surface border border-white/5 rounded-sm"
+              className="section-reveal p-5 bg-surface border border-white/5 rounded-sm"
               style={{ transitionDelay: "240ms" }}
             >
-              <span className="text-accent text-sm mt-0.5">📍</span>
-              <div>
-                <p className="text-xs font-mono text-subtle">
-                  Dallas, TX
-                </p>
-                <p className="text-xs font-mono text-muted mt-0.5">
-                  Available for onsite, hybrid, and remote roles
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <span className="text-base mt-0.5">📍</span>
+                <div>
+                  <p className="text-xs font-mono text-subtle font-medium">
+                    Dallas, TX
+                  </p>
+                  <p className="text-xs font-mono text-muted mt-0.5">
+                    Open to relocation across the US
+                  </p>
+                </div>
+              </div>
+
+              {/* Work type badges */}
+              <div className="flex flex-wrap gap-2 pl-7">
+                {["Onsite", "Hybrid", "Remote"].map((type) => (
+                  <span
+                    key={type}
+                    className="text-[10px] font-mono uppercase tracking-widest text-accent border border-accent/25 bg-accent/5 px-3 py-1 rounded-sm"
+                  >
+                    {type}
+                  </span>
+                ))}
               </div>
             </div>
           </div>

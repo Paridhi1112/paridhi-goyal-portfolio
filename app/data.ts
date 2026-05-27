@@ -1,9 +1,19 @@
+type EducationEntry = {
+  degree: string;
+  focus: string | null;
+  school: string;
+  period: string;
+  gpa: string;
+  note: string | null;
+  completed: boolean;
+};
+
 export const portfolio = {
   name: "Paridhi Goyal",
   tagline: "I build systems that scale — and the teams that scale with them.",
   headline: "Senior Software Engineer",
   subheadline: "Cloud-Native Architecture · Data Pipelines · Full-Stack Engineering",
-  location: "Troy, NY",
+  location: "Dallas, TX",
   email: "paridhi.goyal1112@gmail.com",
   linkedin: "https://linkedin.com/in/paridhigoyal11",
   github: "https://github.com/Paridhi1112",
@@ -12,7 +22,7 @@ export const portfolio = {
 
   about: [
     "I'm a Senior Software Engineer with 5+ years of production experience designing high-throughput APIs, cloud-native data pipelines, and microservice architectures at Accenture and Tech Mahindra.",
-    "Currently pursuing my MS in Information Technology (Data Science & Analytics) at RPI with a 4.0 GPA — combining deep engineering fundamentals with applied AI/ML. I served as Graduate Teaching Assistant for Statistical Methods and Managing IT Resources.",
+    "Recently graduated with an MS in Information Technology (Data Science & Analytics) from RPI with a 3.93 GPA — combining deep engineering fundamentals with applied AI/ML. I served as Graduate Teaching Assistant for Statistical Methods and Managing IT Resources.",
     "My work spans the full engineering lifecycle: from architecting enterprise integrations for Fortune 500 clients like General Electric and Oracle, to authoring a published whitepaper that standardized large-file automation practices at Accenture.",
   ],
 
@@ -20,7 +30,7 @@ export const portfolio = {
     { value: "5+", label: "Years of experience" },
     { value: "99.9%", label: "API uptime delivered" },
     { value: "50%", label: "Pipeline efficiency gains" },
-    { value: "4.0", label: "MS GPA at RPI" },
+    { value: "3.93", label: "MS GPA at RPI" },
   ],
 
   experience: [
@@ -91,9 +101,10 @@ export const portfolio = {
       degree: "Master of Science — Information Technology",
       focus: "Data Science & Analytics",
       school: "Rensselaer Polytechnic Institute",
-      period: "Aug 2025 – May 2026 (Expected)",
-      gpa: "4.0 / 4.0",
+      period: "Aug 2025 – May 2026",
+      gpa: "3.93 / 4.0",
       note: "Graduate Teaching Assistant: Statistical Methods & Managing IT Resources",
+      completed: true,
     },
     {
       degree: "Bachelor of Technology — Computer Science & Engineering",
@@ -102,8 +113,9 @@ export const portfolio = {
       period: "Jul 2016 – Jul 2020",
       gpa: "3.6 / 4.0",
       note: null,
+      completed: true,
     },
-  ],
+  ] as EducationEntry[],
 
   projects: [
     {
@@ -156,16 +168,20 @@ export const portfolio = {
 
   achievements: [
     {
+      title: "Beta Gamma Sigma — Honor Society Nominee",
+      detail: "Nominated by the Dean of the College — Beta Gamma Sigma is the highest international honor for business and technology students, recognizing the top 10% of graduates globally",
+    },
+    {
       title: "Published Technical Whitepaper",
-      detail: "Authored Accenture's internal standard for Multipart Form-Data large-file automation — adopted company-wide",
+      detail: "Authored Accenture's internal standard for Multipart Form-Data large-file automation — adopted company-wide across engineering teams",
     },
     {
       title: "Cloud Framework Innovation",
-      detail: "Built a reusable cloud deployment framework cutting provisioning time by 45% across Oracle client teams",
+      detail: "Built a reusable cloud deployment framework cutting provisioning time by 45% across Oracle client teams at Tech Mahindra",
     },
     {
-      title: "Perfect Academic GPA",
-      detail: "4.0/4.0 in MS program at Rensselaer Polytechnic Institute while serving as Graduate Teaching Assistant",
+      title: "Academic Excellence at RPI",
+      detail: "Graduated with a 3.93 GPA in the MS program at Rensselaer Polytechnic Institute while serving as Graduate Teaching Assistant for two courses",
     },
   ],
 };

@@ -21,8 +21,11 @@ export default function About() {
     return () => observer.disconnect();
   }, []);
 
+  // Pulled from data.ts — update GPA in one place only
+  const msGpaShort = portfolio.education[0].gpa.split(" ")[0]; // "3.93"
+
   const cards = [
-    { icon: "🎓", label: "Education", value: "MS @ RPI — 4.0 GPA" },
+    { icon: "🎓", label: "Education", value: `MS @ RPI — ${msGpaShort} GPA` },
     { icon: "🏢", label: "Experience", value: "5+ Years Production Eng" },
     { icon: "📄", label: "Published", value: "Accenture Whitepaper" },
     { icon: "☁️", label: "Certified", value: "AWS · Azure · Oracle" },
@@ -77,16 +80,23 @@ export default function About() {
           ))}
 
           {/* Achievements */}
-          <div className="section-reveal pt-4 space-y-4" style={{ transitionDelay: "280ms" }}>
+          <div
+            className="section-reveal pt-4 space-y-4"
+            style={{ transitionDelay: "280ms" }}
+          >
             {portfolio.achievements.map((a) => (
               <div
                 key={a.title}
                 className="flex gap-4 p-4 border border-white/5 rounded-sm bg-surface hover:border-accent/20 transition-colors duration-300"
               >
-                <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-2" />
+                <div className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-2" />
                 <div>
-                  <p className="text-sm font-mono text-[#E8E8F2] mb-1">{a.title}</p>
-                  <p className="text-xs font-mono text-muted leading-relaxed">{a.detail}</p>
+                  <p className="text-sm font-mono text-[#E8E8F2] mb-1">
+                    {a.title}
+                  </p>
+                  <p className="text-xs font-mono text-muted leading-relaxed">
+                    {a.detail}
+                  </p>
                 </div>
               </div>
             ))}
