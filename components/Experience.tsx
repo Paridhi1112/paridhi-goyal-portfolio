@@ -1,208 +1,201 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { portfolio } from "@/app/data";
+import { useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { experience, education } from "@/app/data/experience";
+import { ChevronDown, MapPin, Briefcase, GraduationCap, Award } from "lucide-react";
 
 export default function Experience() {
-  const ref = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(0); // First item expanded by default
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          ref.current?.querySelectorAll(".section-reveal").forEach((el, i) => {
-            setTimeout(() => el.classList.add("visible"), i * 80);
-          });
-        }
-      },
-      { threshold: 0.08 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const exp = portfolio.experience;
-  const edu = portfolio.education;
+  const toggleExpand = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
-    <section
-      ref={ref}
-      id="experience"
-      className="py-28 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto"
-    >
-      <div className="section-reveal mb-3 flex items-center gap-3">
-        <span className="w-8 h-px bg-accent block" />
-        <span className="text-xs font-mono uppercase tracking-[0.2em] text-accent">
-          Experience
-        </span>
-      </div>
-
-      <h2
-        className="section-reveal font-display font-extrabold mb-16"
-        style={{
-          fontSize: "clamp(36px, 5vw, 64px)",
-          letterSpacing: "-0.02em",
-          lineHeight: 1.05,
-        }}
-      >
-        Where I&apos;ve
-        <br />
-        <span
-          style={{
-            WebkitTextStroke: "1px rgba(232,232,242,0.3)",
-            color: "transparent",
-          }}
+    <section id="experience" className="py-28 md:py-36 bg-[var(--color-bg)]" ref={ref}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
+        
+        {/* ── Section Label & Header ──────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
         >
-          shipped
-        </span>{" "}
-        <span className="text-accent">production code.</span>
-      </h2>
+          <span className="section-label mb-6 block w-fit">02 · Career & Track Record</span>
+          <h2
+            className="font-display font-bold text-[var(--color-text)] leading-tight mb-5"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+          >
+            Enterprise Scale & <br />
+            <span className="text-gradient-emerald">Production Systems</span>
+          </h2>
+          <p className="text-base text-[var(--color-muted)] max-w-2xl">
+            A track record of engineering backend microservices, real-time data pipelines, and distributed cloud integrations across Fortune 500 enterprises.
+          </p>
+        </motion.div>
 
-      <div className="grid lg:grid-cols-[280px_1fr] gap-12">
-        {/* Company tabs */}
-        <div className="section-reveal flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
-          {exp.map((e, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`group text-left px-4 py-4 rounded-sm border transition-all duration-200 shrink-0 ${
-                active === i
-                  ? "border-accent/40 bg-accent/5 text-accent"
-                  : "border-white/5 text-muted hover:border-white/15 hover:text-subtle"
-              }`}
-            >
-              <div className="font-display font-bold text-sm mb-0.5">
-                {e.company}
-              </div>
-              {e.client && (
-                <div className="text-xs font-mono text-muted">→ {e.client}</div>
-              )}
-              <div
-                className={`text-[10px] font-mono mt-1 ${
-                  active === i ? "text-accent/60" : "text-muted/60"
-                }`}
-              >
-                {e.period}
-              </div>
-            </button>
-          ))}
-        </div>
+        {/* ── Grid Layout: Experience Timeline + Education ───────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* Left Column: Work Experience Timeline */}
+          <div className="lg:col-span-8 space-y-6 relative">
+            {/* Timeline Line */}
+            <div className="absolute left-6 top-8 bottom-8 w-[2px] bg-gradient-to-b from-[#00FFA3] via-[#38BDF8] to-[var(--color-border)] hidden md:block" />
 
-        {/* Detail panel */}
-        <div className="section-reveal" style={{ transitionDelay: "80ms" }}>
-          {exp[active] && (
-            <div key={active} className="animate-fade-in">
-              {/* Header */}
-              <div className="mb-8">
-                <div className="flex flex-wrap items-baseline gap-3 mb-2">
-                  <h3
-                    className="font-display font-extrabold text-2xl text-[#E8E8F2]"
-                    style={{ letterSpacing: "-0.01em" }}
+            {experience.map((item, idx) => {
+              const isExpanded = expandedIndex === idx;
+              return (
+                <motion.div
+                  key={`${item.company}-${item.role}-${idx}`}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
+                  className="relative md:pl-14"
+                >
+                  {/* Timeline Badge Dot */}
+                  <div
+                    className="absolute left-3.5 top-6 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-[var(--color-bg)] flex items-center justify-center hidden md:flex"
+                    style={{ backgroundColor: item.logoColor }}
                   >
-                    {exp[active].title}
-                  </h3>
-                  <span className="text-xs font-mono text-muted border border-white/10 px-2 py-0.5 rounded-sm">
-                    {exp[active].type}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-4 text-xs font-mono text-muted">
-                  <span className="text-accent">{exp[active].company}</span>
-                  {exp[active].client && (
-                    <span>Client: {exp[active].client}</span>
-                  )}
-                  <span>{exp[active].location}</span>
-                  <span>{exp[active].period}</span>
-                </div>
-              </div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                  </div>
 
-              {/* Highlights */}
-              <ul className="space-y-4 mb-8">
-                {exp[active].highlights.map((h, i) => (
-                  <li key={i} className="flex gap-4 group/item">
-                    <span className="text-accent mt-1 shrink-0 text-sm">›</span>
-                    <p className="font-mono text-sm text-subtle leading-relaxed group-hover/item:text-[#E8E8F2] transition-colors duration-200">
-                      {h}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+                  {/* Card Container */}
+                  <div
+                    onClick={() => toggleExpand(idx)}
+                    className="card-hover glass rounded-2xl p-6 border border-[var(--color-border)] cursor-pointer transition-all duration-300"
+                  >
+                    {/* Top Row: Role, Company, Period */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-mono font-bold text-sm shrink-0"
+                          style={{ backgroundColor: item.logoColor }}
+                        >
+                          {item.logo}
+                        </div>
+                        <div>
+                          <h3 className="font-display font-bold text-[var(--color-text)] text-lg sm:text-xl leading-snug">
+                            {item.role}
+                          </h3>
+                          <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[var(--color-subtle)] mt-0.5">
+                            <span className="font-semibold text-[var(--color-text)]">{item.company}</span>
+                            {item.client && (
+                              <>
+                                <span>•</span>
+                                <span className="text-[#00FFA3]">Client: {item.client}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
-              {/* Tech pills */}
-              <div className="pt-6 border-t border-white/5">
-                <div className="text-xs font-mono uppercase tracking-widest text-muted mb-3">
-                  Stack
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {exp[active].tech.map((t) => (
-                    <span
-                      key={t}
-                      className="text-[10px] font-mono uppercase tracking-wide text-accent bg-accent/5 border border-accent/15 px-3 py-1.5 rounded-sm"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+                      {/* Right Meta (Location, Period, Toggle) */}
+                      <div className="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono text-[var(--color-muted)]">
+                        <div className="text-left sm:text-right">
+                          <div>{item.period}</div>
+                          <div className="flex items-center sm:justify-end gap-1 mt-0.5">
+                            <MapPin className="w-3 h-3 text-[var(--color-subtle)]" />
+                            {item.location}
+                          </div>
+                        </div>
+                        <div className="p-1.5 rounded-lg border border-[var(--color-border)] text-[var(--color-subtle)]">
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform duration-300 ${
+                              isExpanded ? "rotate-180 text-[#00FFA3]" : ""
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    </div>
 
-      {/* Education */}
-      <div className="section-reveal mt-20 pt-16 border-t border-white/5">
-        <div className="mb-6 flex items-center gap-3">
-          <span className="w-6 h-px bg-accent2 block" />
-          <span className="text-xs font-mono uppercase tracking-[0.2em] text-accent2">
-            Education
-          </span>
-        </div>
+                    {/* Tech Badges */}
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {item.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-[var(--color-surface2)] text-[var(--color-subtle)] border border-[var(--color-border)]"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {edu.map((ed) => (
-            <div
-              key={ed.school}
-              className="p-6 bg-surface border border-white/5 rounded-sm hover:border-accent2/25 transition-colors duration-300"
+                    {/* Expandable Content (Highlights) */}
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.35, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-4 border-t border-[var(--color-border)] space-y-2.5">
+                            {item.highlights.map((h, hIdx) => (
+                              <div key={hIdx} className="flex items-start gap-2.5 text-sm text-[var(--color-subtle)] leading-relaxed">
+                                <span className="text-[#00FFA3] font-mono mt-1 text-xs">▹</span>
+                                <span>{h}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Right Column: Education & Academic Leadership */}
+          <div className="lg:col-span-4 space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="glass rounded-2xl p-6 border border-[var(--color-border)] space-y-6"
             >
-              {/* Period + Completed badge */}
-              <div className="flex flex-wrap items-center gap-3 mb-3">
-                <div className="text-xs font-mono text-accent2 uppercase tracking-widest">
-                  {ed.period}
+              <div className="flex items-center gap-3 border-b border-[var(--color-border)] pb-4">
+                <div className="w-10 h-10 rounded-xl bg-[#38BDF8]/10 border border-[#38BDF8]/20 flex items-center justify-center text-[#38BDF8]">
+                  <GraduationCap className="w-5 h-5" />
                 </div>
-                {ed.completed && (
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-accent border border-accent/30 bg-accent/5 px-2 py-0.5 rounded-sm">
-                    ✓ Completed
-                  </span>
-                )}
+                <div>
+                  <h3 className="font-display font-bold text-[var(--color-text)] text-lg">Education</h3>
+                  <p className="text-xs font-mono text-[var(--color-muted)]">Academic Excellence & Leadership</p>
+                </div>
               </div>
 
-              <h4
-                className="font-display font-bold text-base text-[#E8E8F2] mb-1"
-                style={{ letterSpacing: "-0.01em" }}
-              >
-                {ed.degree}
-              </h4>
+              {education.map((edu, idx) => (
+                <div key={idx} className="space-y-2 border-b border-[var(--color-border)] last:border-0 pb-5 last:pb-0">
+                  <div className="flex justify-between items-start">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#00FFA3]/10 text-[#00FFA3] font-semibold border border-[#00FFA3]/20">
+                      GPA: {edu.gpa}
+                    </span>
+                    <span className="text-xs font-mono text-[var(--color-muted)]">{edu.period}</span>
+                  </div>
 
-              {ed.focus && (
-                <p className="text-xs font-mono text-muted mb-2">
-                  Focus: {ed.focus}
-                </p>
-              )}
+                  <h4 className="font-display font-bold text-[var(--color-text)] text-base leading-snug">
+                    {edu.degree}
+                  </h4>
+                  <p className="text-xs text-[var(--color-subtle)] font-medium">{edu.institution}</p>
+                  <p className="text-xs font-mono text-[var(--color-muted)]">{edu.specialization}</p>
 
-              <p className="text-sm font-mono text-subtle mb-3">{ed.school}</p>
+                  {edu.honors && (
+                    <div className="flex items-start gap-1.5 pt-2 text-xs text-[#38BDF8] font-mono">
+                      <Award className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                      <span>{edu.honors}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </motion.div>
+          </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-mono text-accent font-medium">
-                  GPA: {ed.gpa}
-                </span>
-                {ed.note && (
-                  <span className="text-xs font-mono text-muted">
-                    · {ed.note}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </section>

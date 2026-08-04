@@ -1,150 +1,161 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { portfolio } from "@/app/data";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { about, siteConfig } from "@/app/data/index";
+import { Cpu, Eye, Bot, MapPin } from "lucide-react";
+
+const philosophyIcons = [Cpu, Eye, Bot];
+
+const stagger = { container: { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } } };
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
 
 export default function About() {
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          ref.current?.querySelectorAll(".section-reveal").forEach((el, i) => {
-            setTimeout(() => el.classList.add("visible"), i * 100);
-          });
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  // Pulled from data.ts — update GPA in one place only
-  const msGpaShort = portfolio.education[0].gpa.split(" ")[0]; // "3.93"
-
-  const cards = [
-    { icon: "🎓", label: "Education", value: `MS @ RPI — ${msGpaShort} GPA` },
-    { icon: "🏢", label: "Experience", value: "5+ Years Production Eng" },
-    { icon: "📄", label: "Published", value: "Accenture Whitepaper" },
-    { icon: "☁️", label: "Certified", value: "AWS · Azure · Oracle" },
-  ];
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section
-      ref={ref}
-      id="about"
-      className="py-28 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto"
-    >
-      <div className="section-reveal mb-3 flex items-center gap-3">
-        <span className="w-8 h-px bg-accent block" />
-        <span className="text-xs font-mono uppercase tracking-[0.2em] text-accent">
-          About
-        </span>
-      </div>
+    <section id="about" className="py-28 md:py-36 bg-[var(--color-bg)]" ref={ref}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
 
-      <h2
-        className="section-reveal font-display font-extrabold mb-16"
-        style={{
-          fontSize: "clamp(36px, 5vw, 64px)",
-          letterSpacing: "-0.02em",
-          lineHeight: 1.05,
-        }}
-      >
-        Engineered for{" "}
-        <span className="text-accent">scale.</span>
-        <br />
-        Designed for{" "}
-        <span
-          style={{
-            WebkitTextStroke: "1px rgba(232,232,242,0.3)",
-            color: "transparent",
-          }}
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <motion.div
+          variants={stagger.container}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          className="mb-16"
         >
-          impact.
-        </span>
-      </h2>
-
-      <div className="grid lg:grid-cols-2 gap-16 items-start">
-        {/* Text */}
-        <div className="space-y-6">
-          {portfolio.about.map((p, i) => (
-            <p
-              key={i}
-              className="section-reveal font-mono text-sm text-subtle leading-relaxed"
-              style={{ transitionDelay: `${i * 80}ms` }}
-            >
-              {p}
-            </p>
-          ))}
-
-          {/* Achievements */}
-          <div
-            className="section-reveal pt-4 space-y-4"
-            style={{ transitionDelay: "280ms" }}
+          <motion.span variants={fadeUp} className="section-label mb-6 block w-fit">
+            01 · About
+          </motion.span>
+          <motion.h2
+            variants={fadeUp}
+            className="font-display font-bold text-[var(--color-text)] leading-tight mb-5"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
           >
-            {portfolio.achievements.map((a) => (
-              <div
-                key={a.title}
-                className="flex gap-4 p-4 border border-white/5 rounded-sm bg-surface hover:border-accent/20 transition-colors duration-300"
+            Engineering at the
+            <br />
+            <span className="text-gradient-multi">intersection of scale & intelligence</span>
+          </motion.h2>
+        </motion.div>
+
+        {/* ── Two-column: Narrative + Card ────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start mb-20">
+
+          {/* Left: Paragraphs */}
+          <motion.div
+            variants={stagger.container}
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+            className="lg:col-span-3 space-y-5"
+          >
+            {about.paragraphs.map((p, i) => (
+              <motion.p
+                key={i}
+                variants={fadeUp}
+                className="text-base md:text-lg text-[var(--color-subtle)] leading-relaxed"
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-2" />
+                {p}
+              </motion.p>
+            ))}
+
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-3 pt-4">
+              {[
+                { icon: MapPin, label: siteConfig.location },
+                { icon: Cpu, label: "MS IT · RPI · 3.93 GPA" },
+                { icon: Bot, label: "AWS Certified Developer" },
+              ].map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-xs font-mono text-[var(--color-subtle)]"
+                >
+                  <Icon className="w-3.5 h-3.5 text-[#00FFA3]" /> {label}
+                </span>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Right: Engineering DNA card */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="lg:col-span-2 glass rounded-2xl p-6 border border-[var(--color-border)]"
+          >
+            <p className="section-label mb-4 block w-fit">Engineering DNA</p>
+
+            {[
+              { layer: "AI Applications", value: "Multi-Agent LLM Systems", color: "#A78BFA" },
+              { layer: "Distributed Systems", value: "Kafka · NiFi · Event Streaming", color: "#38BDF8" },
+              { layer: "Cloud Infrastructure", value: "AWS · K8s · OIC · Docker", color: "#F97316" },
+              { layer: "Backend Services", value: "Java · Spring Boot · Python", color: "#00FFA3" },
+              { layer: "Data Platforms", value: "SQL Server · Redis · Supabase", color: "#34D399" },
+            ].map((row, i) => (
+              <div key={row.layer} className="flex items-start gap-3 py-3 border-b border-[var(--color-border)] last:border-0">
+                <div
+                  className="mt-1 w-1 h-12 rounded-full flex-shrink-0 opacity-70"
+                  style={{ background: row.color }}
+                />
                 <div>
-                  <p className="text-sm font-mono text-[#E8E8F2] mb-1">
-                    {a.title}
-                  </p>
-                  <p className="text-xs font-mono text-muted leading-relaxed">
-                    {a.detail}
-                  </p>
+                  <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--color-muted)] mb-0.5">
+                    {row.layer}
+                  </div>
+                  <div className="text-sm font-medium text-[var(--color-text)]">
+                    {row.value}
+                  </div>
+                </div>
+                <div
+                  className="ml-auto text-lg font-mono font-bold"
+                  style={{ color: row.color }}
+                >
+                  L{i + 1}
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-2 gap-4">
-          {cards.map((c, i) => (
-            <div
-              key={c.label}
-              className="section-reveal grad-border p-6 bg-surface rounded-sm hover:-translate-y-1 transition-transform duration-300 cursor-default"
-              style={{ transitionDelay: `${i * 80}ms` }}
-              data-hover
-            >
-              <div className="text-3xl mb-4">{c.icon}</div>
-              <div className="text-xs font-mono uppercase tracking-widest text-muted mb-2">
-                {c.label}
-              </div>
-              <div className="font-display font-bold text-sm text-[#E8E8F2]">
-                {c.value}
-              </div>
-            </div>
-          ))}
-
-          {/* Certifications mini-list */}
-          <div
-            className="section-reveal col-span-2 p-6 bg-surface border border-white/5 rounded-sm"
-            style={{ transitionDelay: "320ms" }}
-          >
-            <div className="text-xs font-mono uppercase tracking-widest text-accent mb-4">
-              Certifications
-            </div>
-            <ul className="space-y-2">
-              {portfolio.certifications.slice(0, 4).map((cert) => (
-                <li key={cert} className="flex items-start gap-2">
-                  <span className="text-accent mt-0.5">›</span>
-                  <span className="text-xs font-mono text-muted">{cert}</span>
-                </li>
-              ))}
-              {portfolio.certifications.length > 4 && (
-                <li className="text-xs font-mono text-accent/60 pl-4">
-                  +{portfolio.certifications.length - 4} more
-                </li>
-              )}
-            </ul>
+        {/* ── Engineering Philosophy ─────────────────────────────────────── */}
+        <motion.div
+          variants={stagger.container}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+        >
+          <motion.div variants={fadeUp} className="mb-8">
+            <h3 className="font-display font-bold text-[var(--color-text)] text-2xl md:text-3xl">
+              Engineering Philosophy
+            </h3>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {about.philosophy.map((item, i) => {
+              const Icon = philosophyIcons[i];
+              return (
+                <motion.div
+                  key={item.title}
+                  variants={fadeUp}
+                  className="card-hover glass rounded-2xl p-6 border border-[var(--color-border)] cursor-default"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#00FFA3]/10 border border-[#00FFA3]/20 flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5 text-[#00FFA3]" />
+                  </div>
+                  <h4 className="font-display font-bold text-[var(--color-text)] text-lg mb-2">
+                    {item.title}
+                  </h4>
+                  <p className="text-sm text-[var(--color-muted)] leading-relaxed">
+                    {item.description}
+                  </p>
+                </motion.div>
+              );
+            })}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

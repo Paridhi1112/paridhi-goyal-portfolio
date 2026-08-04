@@ -1,177 +1,229 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { portfolio } from "@/app/data";
+import { useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { siteConfig } from "@/app/data/index";
+import { Mail, Phone, MapPin, Send, Copy, Check, ArrowUpRight } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "@/components/Icons";
+import confetti from "canvas-confetti";
 
 export default function Contact() {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          ref.current?.querySelectorAll(".section-reveal").forEach((el, i) => {
-            setTimeout(() => el.classList.add("visible"), i * 80);
-          });
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+  const [copied, setCopied] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
-  const links = [
-    {
-      label: "Email",
-      value: portfolio.email,
-      href: `mailto:${portfolio.email}`,
-    },
-    {
-      label: "LinkedIn",
-      value: "paridhigoyal11",
-      href: portfolio.linkedin,
-    },
-    {
-      label: "GitHub",
-      value: "Paridhi1112",
-      href: portfolio.github,
-    },
-    {
-      label: "LeetCode",
-      value: "paridhi11",
-      href: portfolio.leetcode,
-    },
-  ];
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(siteConfig.email);
+    setCopied(true);
+    confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    confetti({ particleCount: 70, spread: 70, origin: { y: 0.7 } });
+  };
 
   return (
-    <section
-      ref={ref}
-      id="contact"
-      className="py-28 px-6 md:px-12 lg:px-20 relative overflow-hidden"
-    >
-      {/* Background glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,255,163,0.06) 0%, transparent 70%)",
-        }}
-      />
+    <section id="contact" className="py-28 md:py-36 bg-[var(--color-bg)]" ref={ref}>
+      <div className="max-w-7xl mx-auto px-5 md:px-10">
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="section-reveal mb-3 flex items-center gap-3">
-          <span className="w-8 h-px bg-accent block" />
-          <span className="text-xs font-mono uppercase tracking-[0.2em] text-accent">
-            Contact
-          </span>
-        </div>
+        {/* ── Section Label & Header ──────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <span className="section-label mb-6 block w-fit">08 · Get In Touch</span>
+          <h2
+            className="font-display font-bold text-[var(--color-text)] leading-tight mb-5"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+          >
+            Let&apos;s Build <br />
+            <span className="text-gradient-emerald">Something Impactful</span>
+          </h2>
+          <p className="text-base text-[var(--color-muted)] max-w-xl">
+            Currently open to Software Development Engineer (SDE-1) roles in Backend Engineering, Distributed Systems, and AI Applications.
+          </p>
+        </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left */}
-          <div>
-            <h2
-              className="section-reveal font-display font-extrabold mb-6"
-              style={{
-                fontSize: "clamp(40px, 5.5vw, 72px)",
-                letterSpacing: "-0.03em",
-                lineHeight: 1.0,
-              }}
-            >
-              Let&apos;s build
-              <br />
-              something
-              <br />
-              <span className="text-accent">remarkable.</span>
-            </h2>
-
-            <p
-              className="section-reveal font-mono text-sm text-muted leading-relaxed mb-4"
-              style={{ transitionDelay: "80ms", maxWidth: "440px" }}
-            >
-              I&apos;m actively seeking full-time{" "}
-              <span className="text-subtle">
-                Software Engineering and Data Engineering
-              </span>{" "}
-              roles across the US — open to{" "}
-              <span className="text-accent">onsite, hybrid, and remote</span>{" "}
-              opportunities.
-            </p>
-
-            <p
-              className="section-reveal font-mono text-sm text-muted leading-relaxed mb-10"
-              style={{ transitionDelay: "120ms", maxWidth: "440px" }}
-            >
-              Based in Dallas, TX and open to relocation. If you&apos;re working
-              on hard problems in distributed systems, AI/ML applications, or
-              cloud-native infrastructure — let&apos;s talk.
-            </p>
-
-            <a
-              className="section-reveal inline-block px-8 py-4 bg-accent text-bg font-mono text-xs uppercase tracking-widest font-medium rounded-sm hover:shadow-[0_0_60px_rgba(0,255,163,0.35)] transition-all duration-300 hover:-translate-y-0.5"
-              href={`mailto:${portfolio.email}`}
-              style={{ transitionDelay: "160ms" }}
-            >
-              Send an Email →
-            </a>
-          </div>
-
-          {/* Right — links */}
-          <div className="space-y-3">
-            {links.map((l, i) => (
-              <a
-                key={l.label}
-                href={l.href}
-                target={l.href.startsWith("mailto") ? undefined : "_blank"}
-                rel="noopener noreferrer"
-                className="section-reveal flex items-center justify-between p-6 bg-surface border border-white/5 rounded-sm hover:border-accent/30 hover:bg-accent/5 group transition-all duration-300"
-                style={{ transitionDelay: `${i * 60}ms` }}
-                data-hover
-              >
-                <div>
-                  <div className="text-xs font-mono uppercase tracking-widest text-muted mb-1">
-                    {l.label}
-                  </div>
-                  <div className="font-mono text-sm text-subtle group-hover:text-accent transition-colors duration-300">
-                    {l.value}
-                  </div>
-                </div>
-                <span className="text-muted group-hover:text-accent group-hover:translate-x-1 transition-all duration-300 text-lg">
-                  →
+        {/* ── Two Column Layout ────────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* Left Column: Direct Info & Copy Button */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-5 space-y-6"
+          >
+            {/* Quick Copy Card */}
+            <div className="glass rounded-2xl p-7 border border-[var(--color-border)]">
+              <span className="text-xs font-mono text-[var(--color-muted)] uppercase tracking-wider block mb-3">
+                Direct Email Channel
+              </span>
+              <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[var(--color-surface2)] border border-[var(--color-border)] mb-4">
+                <span className="font-mono text-sm font-semibold text-[#00FFA3] truncate">
+                  {siteConfig.email}
                 </span>
-              </a>
-            ))}
-
-            {/* Location + availability */}
-            <div
-              className="section-reveal p-5 bg-surface border border-white/5 rounded-sm"
-              style={{ transitionDelay: "240ms" }}
-            >
-              <div className="flex items-start gap-3 mb-3">
-                <span className="text-base mt-0.5">📍</span>
-                <div>
-                  <p className="text-xs font-mono text-subtle font-medium">
-                    Dallas, TX
-                  </p>
-                  <p className="text-xs font-mono text-muted mt-0.5">
-                    Open to relocation across the US
-                  </p>
-                </div>
+                <button
+                  onClick={handleCopyEmail}
+                  className="p-2 rounded-lg bg-[#00FFA3]/10 text-[#00FFA3] hover:bg-[#00FFA3] hover:text-black transition-all shrink-0"
+                  title="Copy email to clipboard"
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
               </div>
+              <p className="text-xs text-[var(--color-muted)]">
+                {copied ? "✓ Copied to clipboard!" : "Click to copy email address directly"}
+              </p>
+            </div>
 
-              {/* Work type badges */}
-              <div className="flex flex-wrap gap-2 pl-7">
-                {["Onsite", "Hybrid", "Remote"].map((type) => (
-                  <span
-                    key={type}
-                    className="text-[10px] font-mono uppercase tracking-widest text-accent border border-accent/25 bg-accent/5 px-3 py-1 rounded-sm"
-                  >
-                    {type}
-                  </span>
-                ))}
+            {/* Social Links Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <a
+                href={siteConfig.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="card-hover glass rounded-2xl p-5 border border-[var(--color-border)] flex flex-col justify-between group"
+              >
+                <LinkedinIcon className="w-6 h-6 text-[#00FFA3] mb-4" />
+                <div>
+                  <div className="text-sm font-bold text-[var(--color-text)] group-hover:text-[#00FFA3]">LinkedIn</div>
+                  <div className="text-xs font-mono text-[var(--color-muted)] flex items-center gap-1 mt-0.5">
+                    Connect <ArrowUpRight className="w-3 h-3" />
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href={siteConfig.github}
+                target="_blank"
+                rel="noreferrer"
+                className="card-hover glass rounded-2xl p-5 border border-[var(--color-border)] flex flex-col justify-between group"
+              >
+                <GithubIcon className="w-6 h-6 text-[#00FFA3] mb-4" />
+                <div>
+                  <div className="text-sm font-bold text-[var(--color-text)] group-hover:text-[#00FFA3]">GitHub</div>
+                  <div className="text-xs font-mono text-[var(--color-muted)] flex items-center gap-1 mt-0.5">
+                    Explore Code <ArrowUpRight className="w-3 h-3" />
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            {/* Location & Status */}
+            <div className="glass rounded-2xl p-6 border border-[var(--color-border)] space-y-3">
+              <div className="flex items-center gap-3 text-xs font-mono text-[var(--color-subtle)]">
+                <MapPin className="w-4 h-4 text-[#00FFA3]" /> {siteConfig.location}
+              </div>
+              <div className="flex items-center gap-3 text-xs font-mono text-[var(--color-subtle)]">
+                <Phone className="w-4 h-4 text-[#00FFA3]" /> {siteConfig.phone}
               </div>
             </div>
-          </div>
+          </motion.div>
+
+          {/* Right Column: Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="lg:col-span-7"
+          >
+            <div className="glass rounded-2xl p-8 border border-[var(--color-border)]">
+              {submitted ? (
+                <div className="py-12 text-center space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#00FFA3]/10 border border-[#00FFA3]/20 text-[#00FFA3] flex items-center justify-center mx-auto text-2xl font-bold">
+                    ✓
+                  </div>
+                  <h3 className="font-display font-bold text-2xl text-[var(--color-text)]">
+                    Message Dispatched!
+                  </h3>
+                  <p className="text-sm text-[var(--color-muted)] max-w-md mx-auto">
+                    Thank you for reaching out. I will get back to you within 24 hours.
+                  </p>
+                  <button
+                    onClick={() => setSubmitted(false)}
+                    className="px-5 py-2.5 rounded-xl bg-[var(--color-surface2)] text-xs font-mono text-[#00FFA3] border border-[var(--color-border)] hover:bg-[#00FFA3] hover:text-black transition-colors"
+                  >
+                    Send Another Message
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-mono text-[var(--color-subtle)] uppercase tracking-wider mb-2">
+                        Your Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        placeholder="Ada Lovelace"
+                        className="w-full px-4 py-3 rounded-xl bg-[var(--color-surface2)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:outline-none focus:border-[#00FFA3] transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-mono text-[var(--color-subtle)] uppercase tracking-wider mb-2">
+                        Your Email
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        placeholder="ada@example.com"
+                        className="w-full px-4 py-3 rounded-xl bg-[var(--color-surface2)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:outline-none focus:border-[#00FFA3] transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-[var(--color-subtle)] uppercase tracking-wider mb-2">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={form.subject}
+                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                      placeholder="SDE Opportunity / Technical Inquiry"
+                      className="w-full px-4 py-3 rounded-xl bg-[var(--color-surface2)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:outline-none focus:border-[#00FFA3] transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-[var(--color-subtle)] uppercase tracking-wider mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      required
+                      rows={5}
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      placeholder="Hi Paridhi, I saw your work on ClaimArmor AI and would love to chat..."
+                      className="w-full px-4 py-3 rounded-xl bg-[var(--color-surface2)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:outline-none focus:border-[#00FFA3] transition-colors resize-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-4 rounded-xl bg-[#00FFA3] text-black font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:shadow-[0_0_25px_rgba(0,255,163,0.4)] hover:scale-[1.01] active:scale-[0.99] transition-all"
+                  >
+                    Send Telemetry Message <Send className="w-4 h-4" />
+                  </button>
+                </form>
+              )}
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>

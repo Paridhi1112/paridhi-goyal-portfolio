@@ -1,111 +1,163 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { portfolio } from "@/app/data";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { siteConfig } from "@/app/data/index";
+import { Menu, X, ArrowUpRight, Code2 } from "lucide-react";
+import { GithubIcon } from "@/components/Icons";
+import ThemeToggle from "@/components/ThemeToggle";
 
-const links = [
-  { label: "About", href: "#about" },
-  { label: "Work", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+const navLinks = [
+  { name: "About", href: "#about" },
+  { name: "Experience", href: "#experience" },
+  { name: "Projects", href: "#projects" },
+  { name: "GitHub", href: "#github" },
+  { name: "Skills", href: "#skills" },
+  { name: "Recommendations", href: "#recommendations" },
+  { name: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
+
+      // active section detection
+      const sections = navLinks.map((l) => l.href.slice(1));
+      const offset = window.scrollY + 180;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= offset) { setActiveSection(sections[i]); break; }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-bg/90 backdrop-blur-xl border-b border-white/5"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16">
-        {/* Logo */}
-        <a
-          href="#"
-          className="font-display font-bold text-lg text-accent tracking-tight hover-link"
-          style={{ letterSpacing: "-0.02em" }}
-        >
-          PG
-        </a>
-
-        {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-10">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="text-xs font-mono uppercase tracking-widest text-muted hover:text-accent transition-colors duration-200 hover-link"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        {/* CTA */}
-        <a
-          href={`mailto:${portfolio.email}`}
-          className="hidden md:block px-5 py-2 text-xs font-mono uppercase tracking-widest text-accent border border-accent/40 rounded-sm hover:bg-accent/10 transition-colors duration-200"
-        >
-          Hire Me
-        </a>
-
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          <span
-            className={`block w-6 h-px bg-accent transition-all duration-300 ${
-              open ? "rotate-45 translate-y-2" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-px bg-muted transition-all duration-300 ${
-              open ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block w-6 h-px bg-accent transition-all duration-300 ${
-              open ? "-rotate-45 -translate-y-2" : ""
-            }`}
-          />
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden bg-surface border-t border-white/5 px-6 py-6 flex flex-col gap-5">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm font-mono uppercase tracking-widest text-subtle hover:text-accent transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              {l.label}
-            </a>
-          ))}
-          <a
-            href={`mailto:${portfolio.email}`}
-            className="mt-2 px-5 py-3 text-xs font-mono uppercase tracking-widest text-accent border border-accent/40 text-center rounded-sm"
-          >
-            Hire Me
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
+          scrolled ? "glass-nav py-3" : "bg-transparent py-5"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between">
+          {/* Brand */}
+          <a href="#hero" className="group flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-lg border border-[#00FFA3]/30 bg-[#00FFA3]/10 flex items-center justify-center text-[#00FFA3] font-mono font-bold text-sm group-hover:bg-[#00FFA3] group-hover:text-black transition-all duration-200">
+              PG
+            </span>
+            <span className="font-display font-bold text-[var(--color-text)] text-base group-hover:text-[#00FFA3] transition-colors hidden sm:block">
+              Paridhi Goyal
+            </span>
+            <span className="hidden md:block text-[var(--color-muted)] text-xs font-mono ml-1 pl-3 border-l border-[var(--color-border)]">
+              SDE · Distributed Systems
+            </span>
           </a>
+
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex items-center gap-0.5 bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-2xl px-3 py-1.5 backdrop-blur-md">
+            {navLinks.map((link) => {
+              const id = link.href.slice(1);
+              const active = activeSection === id;
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className={`relative px-3 py-1.5 text-xs font-medium rounded-xl transition-colors duration-200 ${
+                    active ? "text-[#00FFA3]" : "text-[var(--color-subtle)] hover:text-[var(--color-text)]"
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 bg-[#00FFA3]/10 border border-[#00FFA3]/25 rounded-xl -z-10"
+                      transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                    />
+                  )}
+                  {link.name}
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* Right CTAs */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <a
+              href={siteConfig.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl border border-[var(--color-border)] text-[var(--color-subtle)] hover:text-[#00FFA3] hover:border-[#00FFA3]/40 transition-all"
+            >
+              <GithubIcon className="w-4 h-4" />
+            </a>
+            <a
+              href="#contact"
+              className="hidden md:flex items-center gap-1.5 px-4 py-2 bg-[#00FFA3] text-black text-xs font-mono font-bold uppercase tracking-widest rounded-xl hover:shadow-[0_0_20px_rgba(0,255,163,0.4)] hover:scale-[1.02] transition-all"
+            >
+              Contact
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden p-2 rounded-xl border border-[var(--color-border)] text-[var(--color-subtle)]"
+              aria-label="Menu"
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
-      )}
-    </nav>
+
+        {/* Scroll progress */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--color-border)]">
+          <div
+            className="h-full bg-gradient-to-r from-[#00FFA3] via-[#38BDF8] to-[#6C63FF] transition-all duration-100"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </header>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="fixed inset-x-0 top-[62px] z-30 glass-nav border-b border-[var(--color-border)] px-6 py-8 lg:hidden"
+          >
+            <div className="flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-lg font-medium text-[var(--color-text)] hover:text-[#00FFA3] transition-colors"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <div className="pt-4 border-t border-[var(--color-border)]">
+                <a
+                  href="#contact"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full py-3 text-center bg-[#00FFA3] text-black font-mono font-bold uppercase tracking-widest text-xs rounded-xl"
+                >
+                  Get in Touch
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
