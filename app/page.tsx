@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Experience from "@/components/Experience";
 import Projects from "@/components/Projects";
+import SystemDesign from "@/components/SystemDesign";
 import GithubStats from "@/components/GithubStats";
 import Skills from "@/components/Skills";
 import Certifications from "@/components/Certifications";
@@ -23,6 +24,7 @@ export default function Home() {
         <About />
         <Experience />
         <Projects />
+        <SystemDesign />
         <GithubStats />
         <Skills />
         <Certifications />
