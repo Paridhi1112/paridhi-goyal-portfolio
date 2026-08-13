@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteConfig } from "@/app/data/index";
-import { Menu, X, ArrowUpRight, Code2 } from "lucide-react";
+import { Menu, X, ArrowUpRight, Terminal } from "lucide-react";
 import { GithubIcon } from "@/components/Icons";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -90,6 +90,15 @@ export default function Navbar() {
 
           {/* Right CTAs */}
           <div className="flex items-center gap-2">
+            {/* Terminal button */}
+            <button
+              onClick={() => document.dispatchEvent(new CustomEvent("open-terminal"))}
+              title="Open Terminal (Ctrl+K)"
+              className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--color-border)] text-[var(--color-subtle)] hover:text-[#00FFA3] hover:border-[#00FFA3]/40 hover:bg-[#00FFA3]/5 transition-all text-xs font-mono font-bold"
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              <span className="hidden lg:block">Ctrl+K</span>
+            </button>
             <ThemeToggle />
             <a
               href={siteConfig.github}

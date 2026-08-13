@@ -13,6 +13,7 @@ import Recommendations from "@/components/Recommendations";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
+import TerminalOverlay from "@/components/TerminalOverlay";
 
 export default function Home() {
   return (
@@ -33,6 +34,7 @@ export default function Home() {
       </main>
       <Footer />
       <ChatBot />
+      <TerminalOverlay />
     </SmoothScroll>
   );
 }

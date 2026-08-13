@@ -1,16 +1,18 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { skills } from "@/app/data/skills";
-import { Cpu, Database, Cloud, Terminal, ShieldCheck, Activity } from "lucide-react";
+import { Cpu, Database, Cloud, Terminal, ShieldCheck, Activity, Zap } from "lucide-react";
 import TiltCard from "@/components/TiltCard";
+import SkillsQuizGame from "@/components/SkillsQuizGame";
 
 const categoryIcons = [Cpu, Activity, Cloud, Terminal, Database, ShieldCheck];
 
 export default function Skills() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [quizOpen, setQuizOpen] = useState(false);
 
   return (
     <section id="skills" className="py-28 md:py-36 bg-[var(--color-bg)] relative overflow-hidden" ref={ref}>
@@ -111,7 +113,35 @@ export default function Skills() {
           })}
         </div>
 
+        {/* ── Challenge Me CTA ─────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-14 flex flex-col items-center gap-4 text-center"
+        >
+          <div className="px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono text-[var(--color-muted)] tracking-widest uppercase">
+            Think you know Paridhi's stack?
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(0,255,163,0.4)" }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setQuizOpen(true)}
+            className="group flex items-center gap-3 px-8 py-4 bg-[#00FFA3] text-black font-bold text-sm font-mono uppercase tracking-wider rounded-2xl shadow-[0_0_25px_rgba(0,255,163,0.3)] transition-all duration-200"
+          >
+            <Zap className="w-4 h-4 group-hover:animate-pulse" />
+            🎮 Challenge Me
+            <Zap className="w-4 h-4 group-hover:animate-pulse" />
+          </motion.button>
+          <p className="text-xs text-[var(--color-muted)] font-mono">
+            8 questions · 12 seconds each · earn your engineer badge
+          </p>
+        </motion.div>
+
       </div>
+
+      {/* Quiz Modal */}
+      <SkillsQuizGame isOpen={quizOpen} onClose={() => setQuizOpen(false)} />
     </section>
   );
 }

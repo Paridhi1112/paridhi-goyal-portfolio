@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { portfolio, SystemDesignTopic } from "@/app/data";
-import { Cpu, Server, Database, Layers, Radio, ShieldCheck, Activity, Zap, CheckCircle2, ArrowRight } from "lucide-react";
+import { Cpu, Server, Database, Layers, Radio, ShieldCheck, Activity, Zap, CheckCircle2, ArrowRight, Play } from "lucide-react";
 import TiltCard from "@/components/TiltCard";
+import KafkaStreamSimulator from "@/components/KafkaStreamSimulator";
 
 export default function SystemDesign() {
   const [selectedTopicId, setSelectedTopicId] = useState<string>("event-driven-kafka");
+  const [showSimulator, setShowSimulator]     = useState(false);
 
   const activeTopic =
     portfolio.systemDesigns.find((t) => t.id === selectedTopicId) || portfolio.systemDesigns[0];
@@ -169,6 +171,49 @@ export default function SystemDesign() {
                 ))}
               </div>
             </div>
+
+            {/* Simulator toggle — only on the Kafka topic */}
+            {selectedTopicId === "event-driven-kafka" && (
+              <div className="mt-8 pt-8 border-t border-white/10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                  <div>
+                    <h4 className="text-sm font-mono font-bold text-white mb-1">
+                      Interactive Event Stream Simulator
+                    </h4>
+                    <p className="text-xs font-mono text-gray-500">
+                      Watch Kafka messages flow through the architecture in real-time.
+                    </p>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setShowSimulator(v => !v)}
+                    className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all shrink-0 ${
+                      showSimulator
+                        ? "bg-white/10 text-gray-300 border border-white/20 hover:bg-white/15"
+                        : "bg-[#00FFA3] text-black shadow-[0_0_25px_rgba(0,255,163,0.35)] hover:shadow-[0_0_35px_rgba(0,255,163,0.5)]"
+                    }`}
+                  >
+                    <Play className={`w-3.5 h-3.5 ${showSimulator ? "" : "animate-pulse"}`} />
+                    {showSimulator ? "Hide Simulator" : "▶ Launch Simulator"}
+                  </motion.button>
+                </div>
+
+                <AnimatePresence>
+                  {showSimulator && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.4, ease: "easeInOut" }}
+                      style={{ overflow: "hidden" }}
+                    >
+                      <KafkaStreamSimulator />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
           </div>
         </TiltCard>
